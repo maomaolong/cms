@@ -1,3 +1,6 @@
+<?php 
+	require 'database/DB.php'; 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,12 +117,14 @@ $('#login_btn').on('click', function(){
 	if(num>0){  
 		return false;
 	}else{
-		layer.alert('登陆成功！',{
-            title: '提示框',				
-			icon:1,		
-		});
-	    location.href="index.html";
-		layer.close(index);	
+		<?php if (DB::checkUser("chenglong","123456987")): ?>
+          	location.href="index.html";
+        <?php else : ?>
+        	layer.alert("用户名或密码错误",{
+                title: '提示框',				
+				icon:0,								
+          	}); 
+        <?php endif; ?>
 	}		  		     						
 })
 </script>
