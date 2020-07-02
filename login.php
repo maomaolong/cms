@@ -1,6 +1,3 @@
-<?php 
-	require 'database/DB.php'; 
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,9 +14,41 @@
 	<title>登陆</title>
 </head>
 
+<?php 
+require 'database/DB.php'; 
+$error = "";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	if (empty($_POST["name"])) {
+      	$error = "请输入用户名和密码";
+   	} else {
+      	$name = test_input($_POST["name"]);
+   	}
+   	if (empty($_POST["password"])) {
+      	$error = "请输入用户名和密码";
+   	} else {
+      	$password = test_input($_POST["password"]);
+   	}
+   	if (DB::checkUser($name,$password)) {
+   		$error = "success";
+   	} else {
+   		$error = "账户名或密码错误";
+   	}
+}
+function test_input($data) {
+   	$data = trim($data);
+   	$data = stripslashes($data);
+   	$data = htmlspecialchars($data);
+   	return $data;
+}
+?>
+<?php if ($error == "success"): ?>
+<script>
+location.href='index.html';
+</script>script>
+<?php else : ?>
 <body class="login-layout">
 	<div class="logintop">    
-    	<span>欢迎后台管理界面平台</span>    
+    	<span><?php echo $error ?></span>    
 	    <ul>
 	    <li><a href="#">返回首页</a></li>
 	    <li><a href="#">帮助</a></li>
@@ -49,18 +78,18 @@
 
 							<div class="login_icon"><img src="images/login.png" /></div>
 
-							<form class="">
+							<form action="login.php" method="POST">
 								<fieldset>
 									<label class="block clearfix">
 										<span class="block input-icon input-icon-right">
-											<input type="text" class="form-control" placeholder="登录名"  name="登录名">
+											<input type="text" class="form-control" placeholder="登录名"  name="name">
 											<i class="icon-user"></i>
 										</span>
 									</label>
 
 									<label class="block clearfix">
 										<span class="block input-icon input-icon-right">
-											<input type="password" class="form-control" placeholder="密码" name="密码">
+											<input type="password" class="form-control" placeholder="密码" name="password">
 											<i class="icon-lock"></i>
 										</span>
 									</label>
@@ -72,11 +101,7 @@
 											<input type="checkbox" class="ace">
 											<span class="lbl">保存密码</span>
 										</label>
-
-										<button type="button" class="width-35 pull-right btn btn-sm btn-primary" id="login_btn">
-											<i class="icon-key"></i>
-											登陆
-										</button>
+										<input type="submit" class="width-35 pull-right btn btn-sm btn-primary" value="登陆">
 									</div>
 
 									<div class="space-4"></div>
@@ -99,32 +124,5 @@
     </div>
     <div class="loginbm">版权所有  2016  <a href="">南京思美软件系统有限公司</a> </div><strong></strong>
 </body>
+<?php endif ; ?>
 </html>
-<script>
-$('#login_btn').on('click', function(){
-	var num=0;
-	var str="";
-    $("input[type$='text']").each(function(n){
-        if($(this).val()==""){
-			layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
-                title: '提示框',				
-				icon:0,								
-          	}); 
-		    num++;
-            return false;            
-        } 
-	});
-	if(num>0){  
-		return false;
-	}else{
-		<?php if (DB::checkUser("chenglong","123456987")): ?>
-          	location.href="index.html";
-        <?php else : ?>
-        	layer.alert("用户名或密码错误",{
-                title: '提示框',				
-				icon:0,								
-          	}); 
-        <?php endif; ?>
-	}		  		     						
-})
-</script>
